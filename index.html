@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Lockes</title>
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Winwheel.js dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+    <script src="src/libs/Winwheel.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav id="navigation"></nav>
+        <main id="main-content">
+            <div id="initial-loading" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1e293b; color: #f8fafc; font-family: Arial, sans-serif;">
+                <div style="text-align: center;">
+                    <div style="width: 40px; height: 40px; border: 4px solid #64748b; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                    <h2 style="margin: 0 0 0.5rem 0;">⚡ Cargando Pokémon Lockes</h2>
+                    <p style="margin: 0; color: #cbd5e1;">Iniciando aplicación...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    
+    <script>
+        var $ = (query) => {
+            if (query.charAt(0) === '#') return document.getElementById(query.substr(1));
+            return document.querySelector(query);
+        };
+
+        // Only for templating
+        var html = String.raw;
+        
+        // Error handling for module loading
+        window.addEventListener('error', (e) => {
+            if (e.filename && e.filename.includes('src/app.js')) {
+                console.error('❌ Error loading modules. This might be a CORS issue.');
+                document.body.innerHTML = `
+                    <div style="padding: 2rem; text-align: center; color: #ef4444; font-family: Arial, sans-serif; background: #1e293b; min-height: 100vh;">
+                        <h1 style="color: #f8fafc;">⚠️ Error de Carga</h1>
+                        <p style="color: #cbd5e1;">No se pudieron cargar los módulos de la aplicación.</p>
+                        <p style="color: #94a3b8;">Esto puede deberse a restricciones CORS del navegador.</p>
+                        <div style="background: #334155; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                            <h3 style="color: #f8fafc;">Soluciones:</h3>
+                            <ul style="color: #cbd5e1; text-align: left; display: inline-block;">
+                                <li>Asegúrate de usar Live Server (recomendado)</li>
+                                <li>O usa un servidor web local como http-server</li>
+                                <li>Evita abrir el archivo directamente (file://)</li>
+                            </ul>
+                        </div>
+                        <button onclick="location.reload()" style="background: #3b82f6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-size: 1rem; margin-top: 1rem;">
+                            🔄 Reintentar
+                        </button>
+                    </div>
+                `;
+            }
+        });
+    </script>
+    <script src="src/app.js" type="module"></script>
+</body>
+</html>

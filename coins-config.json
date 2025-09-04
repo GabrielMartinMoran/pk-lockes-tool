@@ -1,0 +1,16 @@
+{
+  "rarityPrices": {
+    "common": 10,
+    "uncommon": 25,
+    "rare": 50,
+    "epic": 100,
+    "legendary": 200
+  },
+  "coinRewards": {
+    "small": 5,
+    "medium": 15,
+    "large": 30,
+    "huge": 75
+  },
+  "initialCoins": 0
+}
