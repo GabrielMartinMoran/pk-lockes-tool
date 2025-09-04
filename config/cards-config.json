@@ -1,0 +1,130 @@
+{
+    "cards": {
+        "intercambio_misterioso": {
+            "name": "Intercambio Misterioso",
+            "type": "action",
+            "rarity": "uncommon",
+            "description": "Intercambia un Pokémon por otro aleatorio al mismo nivel",
+            "image": "https://i.redd.it/5no4hiw3x99e1.png"
+        },
+        "pepita": {
+            "name": "Pepita",
+            "type": "item",
+            "rarity": "uncommon",
+            "description": "Obtienes una Pepita",
+            "image": "https://static.wikia.nocookie.net/espokemon/images/5/55/Pepita_%28Dream_World%29.png"
+        },
+        "maxipepita": {
+            "name": "Maxipepita",
+            "type": "item",
+            "rarity": "rare",
+            "description": "Obtienes una Maxiepita",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/1/11/latest/20230102192022/Maxipepita_EP.png"
+        },
+        "captura_extra": {
+            "name": "Captura Extra",
+            "type": "item",
+            "rarity": "uncommon",
+            "description": "Te permite capturar un Pokémon adicional en la ruta actual",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/f/fb/latest/20230918183433/Amuleto_captura_EP.png"
+        },
+        "saltar_pokemon": {
+            "name": "Saltar Pokémon",
+            "type": "item",
+            "rarity": "common",
+            "description": "Te permite saltar el Pokémon que sería captura de ruta y probar de nuevo (debes quedarte con el que salga)",
+            "image": "https://cdn-icons-png.freepik.com/512/14018/14018644.png"
+        },
+        "revivir": {
+            "name": "Revivir",
+            "type": "item",
+            "rarity": "legendary",
+            "description": "Revive un Pokémon que haya muerto",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/6/66/latest/20230123181439/Revivir_m%C3%A1ximo_EP.png"
+        },
+        "compra_cura": {
+            "name": "Compra Cura",
+            "type": "item",
+            "rarity": "uncommon",
+            "description": "Puedes comprar un objeto curativo",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/1/1b/latest/20230115181246/Poci%C3%B3n_m%C3%A1xima_EP.png"
+        },
+        "master_ball": {
+            "name": "Master Ball",
+            "type": "item",
+            "rarity": "legendary",
+            "description": "Obtienes una Master Ball",
+            "image": "https://archives.bulbagarden.net/media/upload/a/a6/Bag_Master_Ball_SV_Sprite.png"
+        },
+        "segunda_oportunidad": {
+            "name": "Segunda Oportunidad",
+            "type": "protection",
+            "rarity": "epic",
+            "description": "Si un Pokémon es derrotado, puedes canjear esta carta para que no muera",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/b/be/latest/20230122140856/Banda_aguante_EP.png"
+        },
+        "capsula_habilidad": {
+            "name": "Capsula Habilidad",
+            "type": "action",
+            "rarity": "rare",
+            "description": "Obtienes una capsula habilidad para usar en 1 Pokemon",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/3/3a/latest/20230102183819/C%C3%A1psula_habilidad_EP.png"
+        },
+        "parche_habilidad": {
+            "name": "Parche Habilidad",
+            "type": "action",
+            "rarity": "rare",
+            "description": "Obtienes un parche habilidad para usar en 1 Pokemon",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/2/23/latest/20230102183852/Parche_habilidad_EP.png"
+        },
+        "chapa_plateada": {
+            "name": "Chapa Plateada",
+            "type": "action",
+            "rarity": "rare",
+            "description": "Ponle un IV a 31 a un Pokémon",
+            "image": "https://static.wikia.nocookie.net/pokemonreloaded/images/6/6c/Chapa_plateada_EP.png/revision/latest?cb=20250408145611&path-prefix=es"
+        },
+        "chapa_dorada": {
+            "name": "Chapa Dorada",
+            "type": "action",
+            "rarity": "epic",
+            "description": "Ponle 31 IVs en todas sus etadísticas a un Pokémon",
+            "image": "https://static.wikia.nocookie.net/pokemonreloaded/images/2/21/Chapa_dorada_EP.png/revision/latest?cb=20250408145023&path-prefix=es"
+        },
+        "superentrenamiento": {
+            "name": "Superentrenamiento",
+            "type": "boost",
+            "rarity": "epic",
+            "description": "Ponle una distribución de EVs a gusto a un Pokémon",
+            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgqaGN09S6vZXI-3jsOEUelo-U0OAHelEebw&s"
+        },
+        "hacer_shiny": {
+            "name": "Hacer Shiny",
+            "type": "item",
+            "rarity": "legendary",
+            "description": "Transforma un Pokémon en Shiny",
+            "image": "https://archives.bulbagarden.net/media/upload/4/4d/Bag_Shiny_Charm_SV_Sprite.png"
+        },
+        "objeto_evolutivo": {
+            "name": "Objeto Evolutivo",
+            "type": "item",
+            "rarity": "common",
+            "description": "Consigue una objeto evolutivo (no incluye megapiedras)",
+            "image": "https://pbs.twimg.com/media/E3_0Z43VkAQGqA_.png"
+        },
+        "escama_corazon": {
+            "name": "Escama Corazón",
+            "type": "item",
+            "rarity": "common",
+            "description": "Consigue una escama corazón",
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/4/4a/latest/20240129204317/Escama_coraz%C3%B3n_%28Dream_World%29.png"
+        },
+        "objeto_competitivo": {
+            "name": "Objeto Competitivo",
+            "type": "item",
+            "rarity": "uncommon",
+            "description": "Consigue una objeto competitivo a elección",
+            "image": "https://img.rankedboost.com/wp-content/uploads/2018/10/Pokemon-Lets-Go-Items.png"
+        }
+    }
+}

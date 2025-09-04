@@ -22,16 +22,18 @@ const CardsPage = (container) => {
   };
   
   const render = () => html`
-    <div class="page cards-page">
+    <div class="page-container">
       <div class="page-header">
         <h1 class="page-title">
           <span class="title-icon">🃏</span>
           Mis Cartas
         </h1>
-        <p class="page-description">
+        <p class="page-subtitle">
           Administra tu colección de cartas obtenidas de las ruletas
         </p>
       </div>
+      
+      <div class="page-content">
       
       ${state.loading ? html`
         <div class="loading-container">
@@ -136,6 +138,7 @@ const CardsPage = (container) => {
           `}
         </div>
       ` : ''}
+      </div>
     </div>
   `;
   

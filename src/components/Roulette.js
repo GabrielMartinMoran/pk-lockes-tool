@@ -321,15 +321,20 @@ const RouletteComponent = (container, props = {}) => {
     });
     
     if (result.card) {
-      // Add card to collection
-      CardService.addCard(result.card);
-      console.log('📄 Card added to collection:', result.card.name);
+      try {
+        // Add card to collection (result.card already contains resolved card data)
+        await CardService.addCard(result.card);
+        console.log('📄 Card added to collection:', result.card.name);
+      } catch (error) {
+        console.error('❌ Error adding card to collection:', error);
+      }
     }
     
+    let coinAmount = 0;
     if (result.coins) {
       // Add coins to balance
       const coinConfig = await CoinService.getConfig();
-      const coinAmount = coinConfig.coinRewards[result.coins] || 0;
+      coinAmount = coinConfig.coinRewards[result.coins] || 0;
       await CoinService.addCoins(coinAmount);
       console.log(`💰 Added ${coinAmount} coins (${result.coins})`);
       
@@ -394,6 +399,17 @@ const RouletteComponent = (container, props = {}) => {
                   <p class="card-description">${result.card.description}</p>
                 </div>
                 <p class="card-added">✨ ¡Carta añadida a tu colección!</p>
+              </div>
+            ` : ''}
+            
+            ${result.coins && coinAmount > 0 ? html`
+              <div class="result-coins">
+                <div class="coins-reward">
+                  <span class="coins-icon">💰</span>
+                  <span class="coins-amount">+${coinAmount}</span>
+                  <span class="coins-label">monedas</span>
+                </div>
+                <p class="coins-added">✨ ¡Monedas añadidas a tu balance!</p>
               </div>
             ` : ''}
             

@@ -5,49 +5,33 @@
 import StorageService from './StorageService.js';
 
 const CoinService = (() => {
-  const COINS_KEY = 'pokemon_lockes_coins';
-  const CONFIG_URL = './coins-config.json';
+  const COINS_KEY = 'coins';
+  const CONFIG_URL = './config/coins-config.json';
   
   let coinsConfig = null;
   
   // Load coins configuration
   const loadCoinsConfig = async () => {
-    if (coinsConfig) return coinsConfig;
+    if (coinsConfig) {
+      return coinsConfig;
+    }
     
     try {
+      const urlWithTimestamp = `${CONFIG_URL}?t=${Date.now()}`;
       console.log('💰 Loading coins configuration...');
-      const response = await fetch(CONFIG_URL);
+      const response = await fetch(urlWithTimestamp);
       
       if (!response.ok) {
         throw new Error(`Failed to load coins config: ${response.status}`);
       }
       
       coinsConfig = await response.json();
-      console.log('✅ Coins configuration loaded:', coinsConfig);
+      console.log('✅ Coins configuration loaded');
       return coinsConfig;
     } catch (error) {
       console.error('❌ Error loading coins config:', error);
-      
-      // Fallback configuration
-      coinsConfig = {
-        rarityPrices: {
-          common: 10,
-          uncommon: 25,
-          rare: 50,
-          epic: 100,
-          legendary: 200
-        },
-        coinRewards: {
-          small: 5,
-          medium: 15,
-          large: 30,
-          huge: 75
-        },
-        initialCoins: 50
-      };
-      
-      console.log('🔄 Using fallback coins configuration');
-      return coinsConfig;
+      console.error('🚨 App cannot function without valid coins configuration');
+      throw new Error('Failed to load required coins configuration');
     }
   };
   
@@ -56,9 +40,12 @@ const CoinService = (() => {
     const config = await loadCoinsConfig();
     const coins = StorageService.get(COINS_KEY);
     
-    if (coins === null) {
+    if (coins === null || coins === undefined) {
       // First time - set initial coins
-      const initialCoins = config.initialCoins || 50;
+      if (config.initialCoins === undefined) {
+        throw new Error('initialCoins not found in configuration');
+      }
+      const initialCoins = config.initialCoins;
       StorageService.set(COINS_KEY, initialCoins);
       console.log(`💰 Initial coins set: ${initialCoins}`);
       return initialCoins;
@@ -133,7 +120,9 @@ const CoinService = (() => {
   // Clear all coin data (for reset)
   const clearCoins = () => {
     StorageService.remove(COINS_KEY);
-    console.log('💰 All coin data cleared');
+    // Also clear the cached config to force reload
+    coinsConfig = null;
+    console.log('💰 All coin data cleared and config cache cleared');
   };
   
   return {

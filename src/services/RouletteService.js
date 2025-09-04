@@ -4,10 +4,39 @@
 
 import StorageService from './StorageService.js';
 import { RouletteConfig } from '../models/Card.js';
+import CardService from './CardService.js';
 
 const RouletteService = (() => {
   const ROULETTES_KEY = 'roulettes';
   let currentRoulettes = []; // Cache for current session roulettes
+  
+  // Resolve card references in roulette segments
+  const resolveCardReferences = async (segments) => {
+    const resolvedSegments = [];
+    
+    for (const segment of segments) {
+      const resolvedSegment = { ...segment };
+      
+      // If segment has cardId instead of card object, resolve it
+      if (segment.cardId && !segment.card) {
+        try {
+          const cardDefinition = await CardService.getCardDefinition(segment.cardId);
+          if (cardDefinition) {
+            resolvedSegment.card = cardDefinition;
+            console.log(`✅ Resolved card reference: ${segment.cardId} -> ${cardDefinition.name}`);
+          } else {
+            console.warn(`⚠️ Card definition not found for ID: ${segment.cardId}`);
+          }
+        } catch (error) {
+          console.error(`❌ Error resolving card reference ${segment.cardId}:`, error);
+        }
+      }
+      
+      resolvedSegments.push(resolvedSegment);
+    }
+    
+    return resolvedSegments;
+  };
   
   // Get all roulette configurations
   const getAllRoulettes = () => {
@@ -68,7 +97,7 @@ const RouletteService = (() => {
     console.log('🔄 Loading roulettes from JSON (not using localStorage)...');
     
     try {
-      const response = await fetch('./roulettes-config.json');
+      const response = await fetch('./config/roulettes-config.json');
       if (!response.ok) {
         throw new Error(`Failed to fetch config: ${response.status}`);
       }
@@ -81,8 +110,18 @@ const RouletteService = (() => {
       
       console.log(`✅ Loaded ${configData.length} roulettes from JSON`);
       
+      // Resolve card references in each roulette's segments
+      const resolvedConfigData = [];
+      for (const rouletteData of configData) {
+        const resolvedRoulette = { ...rouletteData };
+        if (rouletteData.segments) {
+          resolvedRoulette.segments = await resolveCardReferences(rouletteData.segments);
+        }
+        resolvedConfigData.push(resolvedRoulette);
+      }
+      
       // Convert to RouletteConfig objects and cache them
-      currentRoulettes = configData.map(data => RouletteConfig.fromJSON(data));
+      currentRoulettes = resolvedConfigData.map(data => RouletteConfig.fromJSON(data));
       return currentRoulettes.filter(roulette => roulette.active !== false);
       
     } catch (error) {
@@ -189,7 +228,7 @@ const RouletteService = (() => {
       console.log('🔍 No roulettes found, attempting to load from config...');
       
       // Try to load from the config file
-      const configLoaded = await loadRoulettesFromConfig('./roulettes-config.json');
+      const configLoaded = await loadRoulettesFromConfig('./config/roulettes-config.json');
       
       if (!configLoaded) {
         console.log('⚠️ Config loading failed, creating sample roulettes...');
@@ -342,7 +381,7 @@ const RouletteService = (() => {
   const forceReloadFromJSON = async () => {
     console.log('🔄 Force reloading roulettes from JSON...');
     clearAllRoulettes();
-    const success = await loadRoulettesFromConfig('./roulettes-config.json');
+    const success = await loadRoulettesFromConfig('./config/roulettes-config.json');
     if (success) {
       console.log('✅ Force reload successful');
       return getAllRoulettes();

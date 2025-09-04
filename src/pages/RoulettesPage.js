@@ -14,17 +14,18 @@ const RoulettesPage = (container) => {
   };
   
   const render = () => html`
-    <div class="page roulettes-page">
+    <div class="page-container">
       <div class="page-header">
         <h1 class="page-title">
           <span class="title-icon">🎰</span>
           Ruletas Disponibles
         </h1>
-        <p class="page-description">
+        <p class="page-subtitle">
           Gira las ruletas para obtener nuevas cartas para tu colección
         </p>
-
       </div>
+      
+      <div class="page-content">
       
       ${state.loading ? html`
         <div class="loading-container">
@@ -46,7 +47,7 @@ const RoulettesPage = (container) => {
             <div class="empty-state">
               <div class="empty-icon">🎰</div>
               <h3>No hay ruletas disponibles</h3>
-              <p>No se pudo cargar el archivo roulettes-config.json</p>
+              <p>No se pudo cargar el archivo config/roulettes-config.json</p>
               <p>Verifica que el archivo existe y está bien formateado.</p>
             </div>
           ` : ''}
@@ -95,6 +96,7 @@ const RoulettesPage = (container) => {
           `}
         </div>
       ` : ''}
+      </div>
     </div>
   `;
   

@@ -7,6 +7,7 @@ import NavigationComponent from './components/Navigation.js';
 import RoulettesPage from './pages/RoulettesPage.js';
 import CardsPage from './pages/CardsPage.js';
 import ShopPage from './pages/ShopPage.js';
+import RulesPage from './pages/RulesPage.js';
 
 console.log('📦 Modules loaded successfully');
 
@@ -124,11 +125,11 @@ const App = (() => {
       shopPage.init();
     });
     
-    // Collection page (alias for cards with different filter)
-    Router.addRoute('collection', () => {
-      updateNavigation('collection');
-      const cardsPage = CardsPage(mainContent);
-      cardsPage.init();
+    // Rules page
+    Router.addRoute('rules', () => {
+      updateNavigation('rules');
+      const rulesPage = RulesPage(mainContent);
+      rulesPage.init();
     });
     
     // Settings page (placeholder)
@@ -170,16 +171,30 @@ const App = (() => {
     }
   };
   
-  const handleClearAllData = () => {
+  const handleClearAllData = async () => {
     if (confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.')) {
       try {
-        // Clear localStorage with our prefix
+        // Import services dynamically
+        const { default: CardService } = await import('./services/CardService.js');
+        const { default: CoinService } = await import('./services/CoinService.js');
+        
+        // Clear all data using services
+        CardService.clearAllCards();
+        CardService.clearUnlockedCards();
+        CoinService.clearCoins();
+        
+        // Also clear any other localStorage keys with our prefix (fallback)
         const keys = Object.keys(localStorage).filter(key => 
           key.startsWith('pokemon_lockes_')
         );
         keys.forEach(key => localStorage.removeItem(key));
         
         showNotification('✅ Todos los datos han sido eliminados');
+        
+        // Update navigation coins display
+        if (window.navigation && window.navigation.updateCoins) {
+          window.navigation.updateCoins();
+        }
         
         // Redirect to roulettes page
         setTimeout(() => {

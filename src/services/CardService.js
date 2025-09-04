@@ -9,6 +9,44 @@ const CardService = (() => {
   const CARDS_KEY = 'cards';
   const UNLOCKED_CARDS_KEY = 'unlocked_cards';
   
+  // Cache for cards configuration
+  let cardsConfig = null;
+  
+  // Load cards configuration from JSON
+  const loadCardsConfig = async () => {
+    if (cardsConfig) {
+      return cardsConfig;
+    }
+    
+    try {
+      console.log('📋 Loading cards configuration...');
+      const response = await fetch('/config/cards-config.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      cardsConfig = await response.json();
+      console.log(`✅ Loaded ${Object.keys(cardsConfig.cards).length} card definitions`);
+      return cardsConfig;
+    } catch (error) {
+      console.error('❌ Error loading cards config:', error);
+      // Return empty config as fallback
+      cardsConfig = { cards: {} };
+      return cardsConfig;
+    }
+  };
+  
+  // Get card definition by ID
+  const getCardDefinition = async (cardId) => {
+    const config = await loadCardsConfig();
+    return config.cards[cardId] || null;
+  };
+  
+  // Get all available card definitions
+  const getAllCardDefinitions = async () => {
+    const config = await loadCardsConfig();
+    return config.cards;
+  };
+
   // Get all cards from storage
   const getAllCards = () => {
     const cardsData = StorageService.get(CARDS_KEY, []);
@@ -21,9 +59,22 @@ const CardService = (() => {
     return StorageService.set(CARDS_KEY, cardsData);
   };
   
-  // Add a new card to collection
-  const addCard = (cardData) => {
+  // Add a new card to collection by ID or data
+  const addCard = async (cardInput) => {
     const cards = getAllCards();
+    let cardData;
+    
+    // If cardInput is a string, treat it as a card ID
+    if (typeof cardInput === 'string') {
+      cardData = await getCardDefinition(cardInput);
+      if (!cardData) {
+        throw new Error(`Card with ID "${cardInput}" not found in configuration`);
+      }
+    } else {
+      // Otherwise, use the provided card data directly (for backward compatibility)
+      cardData = cardInput;
+    }
+    
     const newCard = new Card(cardData);
     cards.push(newCard);
     saveCards(cards);
@@ -31,6 +82,7 @@ const CardService = (() => {
     // Also mark this card type as unlocked
     unlockCard(cardData);
     
+    console.log('Card added to collection:', newCard.name);
     return newCard;
   };
   
@@ -209,7 +261,20 @@ const CardService = (() => {
   };
   
   // Purchase a card (add to collection after spending coins)
-  const purchaseCard = async (cardData) => {
+  const purchaseCard = async (cardInput) => {
+    let cardData;
+    
+    // If cardInput is a string, treat it as a card ID
+    if (typeof cardInput === 'string') {
+      cardData = await getCardDefinition(cardInput);
+      if (!cardData) {
+        throw new Error(`Card with ID "${cardInput}" not found in configuration`);
+      }
+    } else {
+      // Otherwise, use the provided card data directly (for backward compatibility)
+      cardData = cardInput;
+    }
+    
     // This will be called after coin verification in the UI
     const newCard = new Card({
       ...cardData,
@@ -250,6 +315,11 @@ const CardService = (() => {
   };
 
   return {
+    // Cards configuration
+    loadCardsConfig,
+    getCardDefinition,
+    getAllCardDefinitions,
+    // Collection management
     getAllCards,
     addCard,
     getCardById,

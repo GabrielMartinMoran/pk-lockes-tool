@@ -12,7 +12,7 @@ const NavigationComponent = (container) => {
       { path: 'roulettes', label: 'Ruletas', icon: '🎰' },
       { path: 'cards', label: 'Mis Cartas', icon: '🃏' },
       { path: 'shop', label: 'Tienda', icon: '🛒' },
-      { path: 'collection', label: 'Colección', icon: '📚' }
+      { path: 'rules', label: 'Reglas', icon: '📋' }
     ],
     coinDisplay: null
   };
