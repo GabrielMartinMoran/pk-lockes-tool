@@ -53,15 +53,16 @@ const CardsPage = (container) => {
         <div class="cards-container">
           ${state.stats ? html`
             <div class="cards-stats">
-              <div class="stat-card">
+              <div class="stat-card clickable ${state.filters.status === 'all' ? 'active' : ''}" data-filter="all">
                 <span class="stat-value">${state.stats.total}</span>
                 <span class="stat-label">Total</span>
               </div>
-              <div class="stat-card available">
+              <div class="stat-card available clickable ${state.filters.status === 'available' ? 'active' : ''}" data-filter="available">
                 <span class="stat-value">${state.stats.available}</span>
                 <span class="stat-label">Disponibles</span>
               </div>
-              <div class="stat-card used">
+              
+              <div class="stat-card used clickable ${state.filters.status === 'used' ? 'active' : ''}" data-filter="used">
                 <span class="stat-value">${state.stats.used}</span>
                 <span class="stat-label">Usadas</span>
               </div>
@@ -113,29 +114,9 @@ const CardsPage = (container) => {
             </div>
           </div>
           
-          ${state.cards.length === 0 ? html`
-            <div class="empty-state">
-              <div class="empty-icon">🃏</div>
-              <h3>No tienes cartas aún</h3>
-              <p>Ve a las ruletas para obtener tus primeras cartas.</p>
-              <button class="go-to-roulettes-button">
-                Ir a Ruletas
-              </button>
-            </div>
-          ` : state.filteredCards.length === 0 ? html`
-            <div class="empty-state">
-              <div class="empty-icon">🔍</div>
-              <h3>No se encontraron cartas</h3>
-              <p>Prueba ajustando los filtros de búsqueda.</p>
-              <button class="clear-filters-button">
-                Limpiar Filtros
-              </button>
-            </div>
-          ` : html`
-            <div class="cards-grid" id="cards-grid">
-              <!-- Cards will be rendered here -->
-            </div>
-          `}
+          <div class="cards-grid" id="cards-grid">
+            <!-- Cards will be rendered here -->
+          </div>
         </div>
       ` : ''}
       </div>
@@ -211,14 +192,35 @@ const CardsPage = (container) => {
     if (clearFiltersButton) {
       clearFiltersButton.addEventListener('click', clearFilters);
     }
+    
+    // Stat cards (clickable filters)
+    const statCards = container.querySelectorAll('.stat-card.clickable');
+    statCards.forEach(statCard => {
+      statCard.addEventListener('click', () => {
+        const filterValue = statCard.getAttribute('data-filter');
+        updateFilter('status', filterValue);
+        
+        // Update the select dropdown to match
+        const statusSelect = container.querySelector('select[data-filter="status"]');
+        if (statusSelect) {
+          statusSelect.value = filterValue;
+        }
+      });
+    });
   };
   
   const loadCards = async () => {
     try {
       setState({ loading: true, error: null });
       
+      // Clean up any used cards that might still be in storage
+      CardService.cleanupUsedCards();
+      
+      
+      
       const cards = CardService.getAllCards();
       const stats = CardService.getCardStats();
+      
       
       setState({ 
         cards: cards,
@@ -239,10 +241,18 @@ const CardsPage = (container) => {
   
   const renderCards = () => {
     const cardsGrid = container.querySelector('#cards-grid');
-    if (!cardsGrid || state.filteredCards.length === 0) return;
+    if (!cardsGrid) {
+      return;
+    }
     
     // Clear existing cards
     cardsGrid.innerHTML = '';
+    
+    // If no cards to show, display empty state
+    if (state.filteredCards.length === 0) {
+      cardsGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>No se encontraron cartas</h3><p>Prueba ajustando los filtros de búsqueda.</p></div>';
+      return;
+    }
     
     // Render each card
     state.filteredCards.forEach(card => {
@@ -252,7 +262,7 @@ const CardsPage = (container) => {
       
       const cardComponent = CardComponent(cardContainer, {
         card: card,
-        showActions: true,
+        showActions: !card.used, // Don't show actions for used cards
         onDelete: handleCardDelete
       });
       cardComponent.mount();
@@ -261,36 +271,52 @@ const CardsPage = (container) => {
   
   const updateFilter = (filterType, value) => {
     const newFilters = { ...state.filters, [filterType]: value };
+    
+    // Update state first
     setState({ filters: newFilters });
-    applyFilters();
+    
+    // Apply filters with the new filters directly
+    applyFiltersWithFilters(newFilters);
   };
   
-  const applyFilters = () => {
-    let filtered = [...state.cards];
+  const applyFiltersWithFilters = (filters = state.filters) => {
+    let filtered = [];
+    
+    // Get base cards based on status filter
+    if (filters.status === 'used') {
+      // Show historical used cards
+      filtered = CardService.getUsedCards();
+    } else if (filters.status === 'available') {
+      // Show only available cards
+      filtered = [...state.cards].filter(card => !card.used);
+    } else {
+      // Show all: available + used historical
+      const availableCards = state.cards.filter(card => !card.used);
+      const usedCards = CardService.getUsedCards();
+      filtered = [...availableCards, ...usedCards];
+    }
     
     // Apply search filter
-    if (state.filters.search) {
-      const searchTerm = state.filters.search.toLowerCase();
+    if (filters.search) {
+      const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(card => 
         card.name.toLowerCase().includes(searchTerm) ||
         card.description.toLowerCase().includes(searchTerm)
       );
     }
     
-
     // Apply rarity filter
-    if (state.filters.rarity !== 'all') {
-      filtered = filtered.filter(card => card.rarity === state.filters.rarity);
-    }
-    
-    // Apply status filter
-    if (state.filters.status !== 'all') {
-      const isUsed = state.filters.status === 'used';
-      filtered = filtered.filter(card => card.used === isUsed);
+    if (filters.rarity !== 'all') {
+      filtered = filtered.filter(card => card.rarity === filters.rarity);
     }
     
     setState({ filteredCards: filtered });
-    applySorting();
+    // Wait for DOM to update before sorting and rendering
+    setTimeout(() => applySorting(), 0);
+  };
+  
+  const applyFilters = () => {
+    applyFiltersWithFilters();
   };
   
   const applySorting = () => {

@@ -82,14 +82,14 @@
             "type": "action",
             "rarity": "rare",
             "description": "Ponle un IV a 31 a un Pokémon",
-            "image": "https://static.wikia.nocookie.net/pokemonreloaded/images/6/6c/Chapa_plateada_EP.png/revision/latest?cb=20250408145611&path-prefix=es"
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/6/6c/latest/20230102191644/Chapa_plateada_EP.png"
         },
         "chapa_dorada": {
             "name": "Chapa Dorada",
             "type": "action",
             "rarity": "epic",
             "description": "Ponle 31 IVs en todas sus etadísticas a un Pokémon",
-            "image": "https://static.wikia.nocookie.net/pokemonreloaded/images/2/21/Chapa_dorada_EP.png/revision/latest?cb=20250408145023&path-prefix=es"
+            "image": "https://images.wikidexcdn.net/mwuploads/wikidex/2/21/latest/20230102191658/Chapa_dorada_EP.png"
         },
         "superentrenamiento": {
             "name": "Superentrenamiento",
@@ -125,6 +125,13 @@
             "rarity": "uncommon",
             "description": "Consigue una objeto competitivo a elección",
             "image": "https://img.rankedboost.com/wp-content/uploads/2018/10/Pokemon-Lets-Go-Items.png"
+        },
+        "menta": {
+            "name": "Menta",
+            "type": "item",
+            "rarity": "rare",
+            "description": "Cambia la naturaleza de un Pokémon",
+            "image": "https://archives.bulbagarden.net/media/upload/3/3f/Bag_Mint_Sp._Atk_SV_Sprite.png"
         }
     }
 }

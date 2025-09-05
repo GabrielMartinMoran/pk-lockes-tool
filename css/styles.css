@@ -9,7 +9,7 @@
     --pokemon-yellow: #fbbf24;
     --pokemon-red: #ef4444;
     --pokemon-green: #10b981;
-    
+
     /* Darker hover states */
     --pokemon-blue-dark: #2563eb;
     --pokemon-yellow-dark: #d97706;
@@ -216,7 +216,6 @@ body {
     background-clip: text;
 }
 
-
 .page-actions {
     margin-top: var(--spacing-lg);
     display: flex;
@@ -338,12 +337,12 @@ button {
     font-weight: 600;
 }
 
- .button:hover,
- button:hover:not(.action-button) {
-     background: var(--pokemon-yellow);
-     transform: translateY(-2px);
-     box-shadow: var(--shadow-md);
- }
+.button:hover,
+button:hover:not(.action-button) {
+    background: var(--pokemon-yellow);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
 
 .button:disabled,
 button:disabled {
@@ -389,6 +388,38 @@ button:disabled {
 
 .stat-card.used {
     border-color: var(--pokemon-red);
+}
+
+.stat-card.clickable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.stat-card.clickable:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+}
+
+.stat-card.clickable:active {
+    transform: translateY(-2px);
+}
+
+.stat-card.clickable.active {
+    border-width: 3px;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card.clickable.active.available {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.stat-card.clickable.active.used {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.stat-card.clickable.active:not(.available):not(.used) {
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .stat-value {
@@ -479,24 +510,24 @@ button:disabled {
 }
 
 /* Cards grid */
- .cards-grid {
-     display: grid;
-     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-     gap: var(--spacing-xl);
- }
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-xl);
+}
 
- /* Pokemon card styles */
- .pokemon-card {
-     background: var(--card-bg);
-     border-radius: var(--radius-xl);
-     overflow: hidden;
-     transition: all 0.3s ease;
-     border: 2px solid transparent;
-     position: relative;
-     height: 500px;
-     display: flex;
-     flex-direction: column;
- }
+/* Pokemon card styles */
+.pokemon-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
 
 .pokemon-card::before {
     content: '';
@@ -523,12 +554,12 @@ button:disabled {
     background: var(--pokemon-red);
 }
 
- .card-inner {
-     padding: var(--spacing-lg);
-     flex: 1;
-     display: flex;
-     flex-direction: column;
- }
+.card-inner {
+    padding: var(--spacing-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
 .card-header {
     display: flex;
@@ -789,54 +820,54 @@ button:disabled {
     opacity: 0.5;
 }
 
- .card-description {
-     color: var(--text-secondary);
-     font-size: 0.875rem;
-     margin-bottom: var(--spacing-md);
-     line-height: 1.5;
-     flex: 1;
- }
+.card-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+    flex: 1;
+}
 
- .card-body {
-     flex: 1;
-     display: flex;
-     flex-direction: column;
- }
- 
- .card-info {
-     margin-bottom: var(--spacing-md);
-     margin-top: auto;
- }
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
- .shop-price-info {
-     margin-bottom: var(--spacing-sm);
- }
+.card-info {
+    margin-bottom: var(--spacing-md);
+    margin-top: auto;
+}
 
- .price-display {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: var(--spacing-xs);
-     padding: var(--spacing-sm) var(--spacing-md);
-     background: var(--accent-bg);
-     border-radius: var(--radius-md);
-     border: 2px solid var(--pokemon-yellow);
- }
+.shop-price-info {
+    margin-bottom: var(--spacing-sm);
+}
 
- .price-icon {
-     font-size: 1.2rem;
- }
+.price-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--accent-bg);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--pokemon-yellow);
+}
 
- .price-amount {
-     font-size: 1.25rem;
-     font-weight: bold;
-     color: var(--pokemon-yellow);
- }
+.price-icon {
+    font-size: 1.2rem;
+}
 
- .price-label {
-     font-size: 0.875rem;
-     color: var(--text-secondary);
- }
+.price-amount {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--pokemon-yellow);
+}
+
+.price-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
 
 .card-obtained {
     font-size: 0.75rem;
@@ -868,46 +899,46 @@ button:disabled {
     margin-top: var(--spacing-xs);
 }
 
- .card-actions {
-     display: flex;
-     gap: var(--spacing-sm);
-     flex-wrap: wrap;
-     margin-top: auto;
-     padding-top: var(--spacing-md);
- }
+.card-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: var(--spacing-md);
+}
 
- .action-button {
-     flex: 1;
-     min-width: 0;
-     font-size: 0.875rem;
-     padding: var(--spacing-md);
-     justify-content: center;
- }
+.action-button {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.875rem;
+    padding: var(--spacing-md);
+    justify-content: center;
+}
 
- .use-button {
-     background: var(--pokemon-green);
- }
+.use-button {
+    background: var(--pokemon-green);
+}
 
- .use-button:hover {
-     background: var(--pokemon-green-dark);
- }
+.use-button:hover {
+    background: var(--pokemon-green-dark);
+}
 
- .unuse-button {
-     background: var(--pokemon-yellow);
-     color: var(--primary-bg);
- }
+.unuse-button {
+    background: var(--pokemon-yellow);
+    color: var(--primary-bg);
+}
 
- .unuse-button:hover {
-     background: var(--pokemon-yellow-dark);
- }
+.unuse-button:hover {
+    background: var(--pokemon-yellow-dark);
+}
 
- .delete-button {
-     background: var(--pokemon-red);
- }
+.delete-button {
+    background: var(--pokemon-red);
+}
 
- .delete-button:hover {
-     background: var(--pokemon-red-dark);
- }
+.delete-button:hover {
+    background: var(--pokemon-red-dark);
+}
 
 /* Roulette styles */
 .roulettes-grid {
@@ -1644,15 +1675,14 @@ canvas[id^='roulette-canvas'] {
     }
 }
 
+.purchase-button {
+    background: var(--pokemon-blue);
+}
 
- .purchase-button {
-     background: var(--pokemon-blue);
- }
-
- .purchase-button:hover:not(.disabled) {
-     background: var(--pokemon-blue-dark);
-     transform: translateY(-2px);
- }
+.purchase-button:hover:not(.disabled) {
+    background: var(--pokemon-blue-dark);
+    transform: translateY(-2px);
+}
 
 .purchase-button.disabled {
     background: var(--text-muted);
@@ -1855,7 +1885,6 @@ canvas[id^='roulette-canvas'] {
         display: none;
     }
 
-
     .page-title {
         font-size: 2rem;
     }
@@ -1935,24 +1964,24 @@ canvas[id^='roulette-canvas'] {
     gap: var(--spacing-sm);
 }
 
- .secondary-actions .action-button {
-     flex: 1;
-     font-size: 0.875rem;
-     padding: var(--spacing-sm) var(--spacing-md);
- }
+.secondary-actions .action-button {
+    flex: 1;
+    font-size: 0.875rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
 
- /* Sell button styles */
- .sell-button {
-     background: var(--pokemon-yellow);
-     color: white;
-     border-color: var(--pokemon-yellow-dark);
-     font-weight: bold;
- }
+/* Sell button styles */
+.sell-button {
+    background: var(--pokemon-yellow);
+    color: white;
+    border-color: var(--pokemon-yellow-dark);
+    font-weight: bold;
+}
 
- .sell-button:hover {
-     background: var(--pokemon-yellow-dark);
-     color: white;
- }
+.sell-button:hover {
+    background: var(--pokemon-yellow-dark);
+    color: white;
+}
 
 /* Roulette result modal card styles */
 .result-card .card-preview {
@@ -2007,5 +2036,3 @@ canvas[id^='roulette-canvas'] {
     font-size: 0.875rem;
     margin: 0;
 }
-
-

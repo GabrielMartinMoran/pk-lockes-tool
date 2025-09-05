@@ -92,21 +92,7 @@ const CardComponent = (container, props = {}) => {
                                                 </button>
                                             </div>
                                         `
-                                      : html`
-                                            <div class="primary-action">
-                                                <button class="action-button unuse-button" data-action="unuse">
-                                                    <span class="button-icon">↩️</span>
-                                                    <span class="button-text">Recuperar</span>
-                                                </button>
-                                            </div>
-
-                                            <div class="secondary-actions">
-                                                <button class="action-button delete-button" data-action="delete">
-                                                    <span class="button-icon">🗑️</span>
-                                                    <span class="button-text">Eliminar</span>
-                                                </button>
-                                            </div>
-                                        `}
+                                      : ''}
                               </div>
                           `
                         : ''}
@@ -141,20 +127,25 @@ const CardComponent = (container, props = {}) => {
 
             switch (action) {
                 case 'use':
-                    result = CardService.useCard(state.card.id);
-                    if (result) {
-                        setState({ card: result });
-                        showNotification('✅ Carta usada correctamente');
+                    if (confirm(`¿Estás seguro de que quieres usar "${state.card.name}"? La carta desaparecerá después de usarla.`)) {
+                        const removed = CardService.removeCard(state.card.id, true); // true = isUsed
+                        if (removed) {
+                            showNotification('✅ Carta usada correctamente');
+                            
+                            // Notify parent component that card was used/removed
+                            if (state.onDelete) {
+                                state.onDelete(state.card.id);
+                            }
+                            
+                            result = true;
+                        } else {
+                            showNotification('❌ Error al usar la carta');
+                        }
+                    } else {
+                        result = true; // User cancelled, not an error
                     }
                     break;
 
-                case 'unuse':
-                    result = CardService.unuseCard(state.card.id);
-                    if (result) {
-                        setState({ card: result });
-                        showNotification('↩️ Carta recuperada');
-                    }
-                    break;
 
                 case 'sell':
                     const sellPrice = await getSellPrice(state.card.rarity);

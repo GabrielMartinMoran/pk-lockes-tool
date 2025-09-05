@@ -121,26 +121,27 @@ const CardService = (() => {
     return null;
   };
   
-  // Unuse a card
-  const unuseCard = (cardId) => {
-    const cards = getAllCards();
-    const card = cards.find(card => card.id === cardId);
-    
-    if (card && card.used) {
-      card.unuse();
-      saveCards(cards);
-      return card;
-    }
-    
-    return null;
-  };
   
   // Remove card from collection
-  const removeCard = (cardId) => {
+  const removeCard = (cardId, isUsed = false) => {
     const cards = getAllCards();
+    const cardToRemove = cards.find(card => card.id === cardId);
     const filteredCards = cards.filter(card => card.id !== cardId);
     
-    if (filteredCards.length !== cards.length) {
+    if (filteredCards.length !== cards.length && cardToRemove) {
+      // If the card is being removed because it was used, increment the historical count and store it
+      if (isUsed) {
+        const currentHistoricalCount = StorageService.get('used_cards_count', 0);
+        StorageService.set('used_cards_count', currentHistoricalCount + 1);
+        
+        // Store the used card in historical record
+        const historicalUsedCards = StorageService.get('used_cards_history', []);
+        cardToRemove.used = true;
+        cardToRemove.usedAt = new Date().toISOString();
+        historicalUsedCards.push(cardToRemove);
+        StorageService.set('used_cards_history', historicalUsedCards);
+      }
+      
       saveCards(filteredCards);
       return true;
     }
@@ -181,36 +182,69 @@ const CardService = (() => {
   const getAvailableCards = () => {
     return getCardsByFilter({ used: false });
   };
-  
-  // Get used cards
+
+  // Get used cards from history
   const getUsedCards = () => {
-    return getCardsByFilter({ used: true });
+    return StorageService.get('used_cards_history', []);
   };
+  
   
   // Get cards count by type
   const getCardStats = () => {
     const cards = getAllCards();
+    const availableCards = cards.filter(card => !card.used);
+    const usedCards = cards.filter(card => card.used);
+    
+    // Get historical used count from storage
+    const historicalUsedCount = StorageService.get('used_cards_count', 0);
+    
     const stats = {
-      total: cards.length,
-      available: cards.filter(card => !card.used).length,
-      used: cards.filter(card => card.used).length,
+      total: cards.length + historicalUsedCount, // Include historical used cards in total
+      available: availableCards.length,
+      used: usedCards.length + historicalUsedCount, // Current used + historical
       byType: {},
       byRarity: {}
     };
     
-    cards.forEach(card => {
-      // Count by type
+    availableCards.forEach(card => {
+      // Count by type (only available cards)
       stats.byType[card.type] = (stats.byType[card.type] || 0) + 1;
       
-      // Count by rarity
+      // Count by rarity (only available cards)
       stats.byRarity[card.rarity] = (stats.byRarity[card.rarity] || 0) + 1;
     });
     
     return stats;
   };
   
+  // Clean up used cards (remove any cards marked as used)
+  const cleanupUsedCards = () => {
+    const cards = getAllCards();
+    const usedCards = cards.filter(card => card.used);
+    const availableCards = cards.filter(card => !card.used);
+    
+    // If there are used cards to clean up, update the historical count and store them
+    if (usedCards.length > 0) {
+      const currentHistoricalCount = StorageService.get('used_cards_count', 0);
+      StorageService.set('used_cards_count', currentHistoricalCount + usedCards.length);
+      
+      // Store used cards in historical record
+      const historicalUsedCards = StorageService.get('used_cards_history', []);
+      usedCards.forEach(card => {
+        card.usedAt = card.usedAt || new Date().toISOString();
+        historicalUsedCards.push(card);
+      });
+      StorageService.set('used_cards_history', historicalUsedCards);
+    }
+    
+    saveCards(availableCards);
+    return availableCards.length !== cards.length; // Return true if any cards were removed
+  };
+
   // Clear all cards
   const clearAllCards = () => {
+    StorageService.remove('used_cards_count'); // Clear historical used count
+    StorageService.remove('used_cards_history'); // Clear historical used cards
     return StorageService.set(CARDS_KEY, []);
   };
   
@@ -325,12 +359,12 @@ const CardService = (() => {
     getCardById,
     updateCard,
     useCard,
-    unuseCard,
     removeCard,
     getCardsByFilter,
     getAvailableCards,
     getUsedCards,
     getCardStats,
+    cleanupUsedCards,
     clearAllCards,
     // Unlocked cards functionality
     getUnlockedCards,
